@@ -14,9 +14,16 @@ describe("campaign insights", () => {
     const insights = getCampaignInsights(input, calculateCampaign(input));
 
     expect(insights).toHaveLength(3);
-    expect(insights[0]).toMatchObject({ tone: "emerald" });
-    expect(insights[1]?.text).toContain("Rp 150.000");
-    expect(insights[2]?.text).toContain("50 hasil");
+    expect(insights[0]).toMatchObject({
+      tone: "emerald",
+      text: expect.stringContaining("menguntungkan berdasarkan biaya iklan"),
+    });
+    expect(insights[1]).toMatchObject({
+      tone: "cyan",
+      text: expect.stringContaining("acuan simulasi Rp 150.000"),
+    });
+    expect(insights[2]?.text).toContain("sekitar 50 hasil");
+    expect(insights[2]?.text).toContain("menyisakan Rp 400.000 setelah CPR");
   });
 
   it("memberi tindakan yang transparan pada skenario negatif", () => {
@@ -28,9 +35,34 @@ describe("campaign insights", () => {
     };
     const insights = getCampaignInsights(input, calculateCampaign(input));
 
-    expect(insights[0]).toMatchObject({ tone: "rose" });
-    expect(insights[0]?.text).toContain("pengurangan CPR");
-    expect(insights[1]).toMatchObject({ tone: "amber" });
-    expect(insights[1]?.text).toContain("heuristic");
+    expect(insights[0]).toMatchObject({
+      tone: "rose",
+      text: expect.stringContaining("belum menguntungkan"),
+    });
+    expect(insights[1]).toMatchObject({
+      tone: "amber",
+      text: expect.stringContaining("CPR saat ini Rp 235.000"),
+    });
+    expect(insights[1]?.text).toContain("acuan simulasi Rp 15.000");
+    expect(insights[2]?.text).toContain("sekitar 6 hasil");
+    expect(insights[2]?.text).toContain("Rp 225.000 lebih rendah daripada CPR");
+  });
+
+  it("menjelaskan kondisi impas tanpa menyiratkan keuntungan", () => {
+    const input = {
+      productPrice: 500_000,
+      adSpend: 1_000_000,
+      costPerResult: 100_000,
+      averageOrderValue: 100_000,
+    };
+    const insights = getCampaignInsights(input, calculateCampaign(input));
+
+    expect(insights[0]).toMatchObject({
+      tone: "amber",
+      text: expect.stringContaining("berada di titik impas"),
+    });
+    expect(insights[1]).toMatchObject({ tone: "cyan" });
+    expect(insights[2]?.text).toContain("Nilai pesanan per hasil sama dengan CPR");
+    expect(insights[2]?.text).toContain("belum ada ruang untuk biaya operasional lainnya");
   });
 });

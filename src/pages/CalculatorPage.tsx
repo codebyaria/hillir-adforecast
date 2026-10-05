@@ -266,7 +266,7 @@ export function CalculatorPage() {
                   <span className="grid h-9 w-9 place-items-center rounded-xl bg-amber-50 text-amber-600" aria-hidden="true"><Lightbulb size={18} /></span>
                   <div>
                     <h2 className="text-lg font-black text-slate-950">Wawasan Utama</h2>
-                    <p className="mt-1 text-xs text-slate-500">Rekomendasi transparan dari metrik Anda.</p>
+                    <p className="mt-1 text-xs text-slate-500">Ringkasan berdasarkan hasil simulasi Anda.</p>
                   </div>
                 </div>
                 <InsightList insights={insights} />

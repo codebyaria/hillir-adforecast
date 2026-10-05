@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+
 import type { CalculationInput, CalculationResult } from "../../shared/types";
 import { formatIdr, formatResultCount } from "../../shared/format";
 
@@ -14,31 +16,39 @@ export function getCampaignInsights(
     result.status === "profitable"
       ? {
           tone: "emerald",
-          text: "Proyeksi kampanye menguntungkan. Pertahankan efisiensi sambil memantau kualitas hasil.",
+          text: "Proyeksi kampanye menguntungkan berdasarkan biaya iklan. Pertahankan efisiensi sambil memantau kualitas hasil.",
         }
       : result.status === "break_even"
         ? {
             tone: "amber",
-            text: "Proyeksi berada di titik impas. Masih diperlukan ruang margin untuk biaya operasional lain.",
+            text: "Proyeksi kampanye berada di titik impas. Belum ada ruang untuk menutup biaya operasional lainnya.",
           }
         : {
             tone: "rose",
-            text: "Kampanye perlu dioptimasi. Fokus pada pengurangan CPR atau peningkatan nilai pesanan.",
+            text: "Proyeksi kampanye belum menguntungkan. Kurangi CPR atau tingkatkan nilai pesanan.",
           };
 
   const cprInsight: CampaignInsight = result.isCprHealthy
     ? {
         tone: "cyan",
-        text: `CPR berada dalam target heuristic 30% harga produk (${formatIdr(result.targetCpr)}).`,
+        text: `CPR Anda masih dalam acuan simulasi ${formatIdr(result.targetCpr)}, yaitu 30% dari harga produk.`,
       }
     : {
         tone: "amber",
-        text: `CPR lebih tinggi dari target heuristic ${formatIdr(result.targetCpr)}. Uji materi iklan atau segmentasi untuk menekannya.`,
+        text: `CPR saat ini ${formatIdr(input.costPerResult)}, melebihi acuan simulasi ${formatIdr(result.targetCpr)}. Coba uji materi iklan atau segmentasi untuk menurunkannya.`,
       };
+
+  const volumeSummary = `Dengan anggaran ${formatIdr(input.adSpend)}, kampanye diperkirakan menghasilkan sekitar ${formatResultCount(result.resultCount)} hasil.`;
+  const marginSummary =
+    result.status === "profitable"
+      ? `Setiap hasil menyisakan ${formatIdr(result.marginPerResult)} setelah CPR, sebelum biaya operasional lainnya.`
+      : result.status === "break_even"
+        ? "Nilai pesanan per hasil sama dengan CPR, sehingga belum ada ruang untuk biaya operasional lainnya."
+        : `Nilai pesanan per hasil masih ${formatIdr(new Decimal(result.marginPerResult).abs())} lebih rendah daripada CPR.`;
 
   const volumeInsight: CampaignInsight = {
     tone: "violet",
-    text: `Dengan anggaran ${formatIdr(input.adSpend)}, estimasinya ${formatResultCount(result.resultCount)} hasil dengan margin ${formatIdr(result.marginPerResult)} per hasil.`,
+    text: `${volumeSummary} ${marginSummary}`,
   };
 
   return [statusInsight, cprInsight, volumeInsight];
