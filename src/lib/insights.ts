@@ -8,6 +8,54 @@ export interface CampaignInsight {
   text: string;
 }
 
+function getCprInsight(
+  input: CalculationInput,
+  result: CalculationResult,
+): CampaignInsight {
+  const currentCpr = formatIdr(input.costPerResult);
+  const targetCpr = formatIdr(result.targetCpr);
+
+  if (result.isCprHealthy && result.status === "profitable") {
+    return {
+      tone: "cyan",
+      text: `CPR ${currentCpr} berada di bawah acuan simulasi ${targetCpr}. Pertahankan level ini sambil menguji perubahan anggaran secara bertahap.`,
+    };
+  }
+
+  if (result.isCprHealthy && result.status === "break_even") {
+    return {
+      tone: "amber",
+      text: `CPR ${currentCpr} berada di bawah acuan simulasi ${targetCpr}, tetapi kampanye baru impas. Turunkan CPR agar tersedia ruang untuk biaya operasional.`,
+    };
+  }
+
+  if (result.isCprHealthy) {
+    return {
+      tone: "amber",
+      text: `CPR ${currentCpr} berada di bawah acuan simulasi ${targetCpr}, tetapi masih lebih tinggi dari nilai pesanan ${formatIdr(input.averageOrderValue)}. Turunkan CPR sebelum menambah anggaran.`,
+    };
+  }
+
+  if (result.status === "profitable") {
+    return {
+      tone: "amber",
+      text: `CPR ${currentCpr} melebihi acuan simulasi ${targetCpr}, meski proyeksi masih menguntungkan. Uji materi iklan atau segmentasi untuk memperlebar selisih keuntungan.`,
+    };
+  }
+
+  if (result.status === "break_even") {
+    return {
+      tone: "amber",
+      text: `CPR ${currentCpr} melebihi acuan simulasi ${targetCpr}. Turunkan CPR agar kampanye bergerak di atas titik impas.`,
+    };
+  }
+
+  return {
+    tone: "amber",
+    text: `CPR ${currentCpr} melebihi acuan simulasi ${targetCpr}. Coba uji materi iklan atau segmentasi untuk menurunkannya.`,
+  };
+}
+
 export function getCampaignInsights(
   input: CalculationInput,
   result: CalculationResult,
@@ -28,23 +76,15 @@ export function getCampaignInsights(
             text: "Proyeksi kampanye belum menguntungkan. Kurangi CPR atau tingkatkan nilai pesanan.",
           };
 
-  const cprInsight: CampaignInsight = result.isCprHealthy
-    ? {
-        tone: "cyan",
-        text: `CPR Anda masih dalam acuan simulasi ${formatIdr(result.targetCpr)}, yaitu 30% dari harga produk.`,
-      }
-    : {
-        tone: "amber",
-        text: `CPR saat ini ${formatIdr(input.costPerResult)}, melebihi acuan simulasi ${formatIdr(result.targetCpr)}. Coba uji materi iklan atau segmentasi untuk menurunkannya.`,
-      };
+  const cprInsight = getCprInsight(input, result);
 
   const volumeSummary = `Dengan anggaran ${formatIdr(input.adSpend)}, kampanye diperkirakan menghasilkan sekitar ${formatResultCount(result.resultCount)} hasil.`;
   const marginSummary =
     result.status === "profitable"
-      ? `Setiap hasil menyisakan ${formatIdr(result.marginPerResult)} setelah CPR, sebelum biaya operasional lainnya.`
+      ? `Setiap hasil menyisakan ${formatIdr(result.marginPerResult)} setelah CPR. Gunakan angka ini sebagai baseline saat menguji skenario lain.`
       : result.status === "break_even"
-        ? "Nilai pesanan per hasil sama dengan CPR, sehingga belum ada ruang untuk biaya operasional lainnya."
-        : `Nilai pesanan per hasil masih ${formatIdr(new Decimal(result.marginPerResult).abs())} lebih rendah daripada CPR.`;
+        ? "Setiap hasil baru menutup CPR. Perbaiki CPR atau nilai pesanan sebelum menaikkan anggaran."
+        : `Nilai pesanan per hasil masih ${formatIdr(new Decimal(result.marginPerResult).abs())} lebih rendah daripada CPR. Perbaiki selisih ini sebelum menaikkan anggaran.`;
 
   const volumeInsight: CampaignInsight = {
     tone: "violet",
