@@ -1,12 +1,14 @@
 interface MetricCardProps {
   eyebrow: string;
   value: string;
+  helperText?: string;
   accent?: "default" | "positive" | "negative" | "cyan";
 }
 
 export function MetricCard({
   eyebrow,
   value,
+  helperText,
   accent = "default",
 }: MetricCardProps) {
   const valueClass = {
@@ -22,6 +24,11 @@ export function MetricCard({
       <p className={`mt-2 truncate text-xl font-black tracking-tight ${valueClass}`} title={value}>
         {value}
       </p>
+      {helperText ? (
+        <p className="mt-1.5 text-[10px] font-medium leading-4 text-slate-400">
+          {helperText}
+        </p>
+      ) : null}
     </div>
   );
 }

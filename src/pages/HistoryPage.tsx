@@ -206,13 +206,14 @@ function SnapshotDrawer({
                 ["Pendapatan", formatIdr(calculation.revenue), "text-slate-950"],
                 ["Keuntungan", formatIdr(calculation.profitAfterAds), profitIsNegative ? "text-rose-600" : "text-cyan-600"],
                 ["Jumlah hasil", formatResultCount(calculation.resultCount), "text-slate-950"],
-                ["Target CPR", formatIdr(calculation.targetCpr), "text-slate-950"],
+                ["Target CPR", formatIdr(calculation.targetCpr), "text-slate-950", "Acuan simulasi: 30% dari harga produk"],
                 ["Pendapatan per hasil", formatIdr(calculation.revenuePerResult), "text-slate-950"],
                 ["Margin per hasil", formatIdr(calculation.marginPerResult), marginIsNegative ? "text-rose-600" : "text-cyan-600"],
-              ].map(([label, value, valueClass]) => (
+              ].map(([label, value, valueClass, helperText]) => (
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5" key={label}>
                   <p className="text-[11px] font-bold text-slate-500">{label}</p>
                   <p className={`mt-1.5 truncate text-sm font-black ${valueClass}`} title={value}>{value}</p>
+                  {helperText ? <p className="mt-1 text-[9px] font-medium leading-3.5 text-slate-400">{helperText}</p> : null}
                 </div>
               ))}
             </div>

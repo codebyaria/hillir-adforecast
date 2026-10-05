@@ -239,7 +239,7 @@ export function CalculatorPage() {
                     <MetricCard eyebrow="Pendapatan" value={formatIdr(result.revenue)} accent="cyan" />
                     <MetricCard eyebrow="Keuntungan" value={formatIdr(result.profitAfterAds)} accent={profitIsPositive ? "cyan" : result.status === "break_even" ? "default" : "negative"} />
                     <MetricCard eyebrow="Jumlah hasil" value={formatResultCount(result.resultCount)} />
-                    <MetricCard eyebrow="Target CPR" value={formatIdr(result.targetCpr)} />
+                    <MetricCard eyebrow="Target CPR" helperText="Acuan simulasi: 30% dari harga produk" value={formatIdr(result.targetCpr)} />
                   </div>
                   <div className="mt-3 grid gap-4 rounded-2xl border border-white bg-white/95 p-5 shadow-sm sm:grid-cols-2">
                     <div>
