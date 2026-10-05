@@ -1,0 +1,12 @@
+node_modules/
+dist/
+public/
+coverage/
+.vercel/
+.neon/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+tmp/

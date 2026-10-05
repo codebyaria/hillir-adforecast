@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+:root {
+  --brand-indigo: #635bff;
+  --brand-blue: #2f7deb;
+  --brand-cyan: #08b7c7;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #0f172a;
+  background: #f8fafc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.brand-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--brand-indigo) 0%,
+    var(--brand-blue) 54%,
+    var(--brand-cyan) 100%
+  );
+}
+
+.brand-gradient-horizontal {
+  background-image: linear-gradient(
+    90deg,
+    var(--brand-indigo) 0%,
+    var(--brand-blue) 55%,
+    var(--brand-cyan) 100%
+  );
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.auth-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom right, black, transparent 80%);
+}
+
+.campaign-range {
+  --range-progress: 0%;
+  height: 6px;
+  cursor: pointer;
+  appearance: none;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--brand-indigo) 0%,
+    var(--brand-blue) var(--range-progress),
+    #e5e7eb var(--range-progress),
+    #e5e7eb 100%
+  );
+  accent-color: var(--brand-indigo);
+}
+
+.campaign-range::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  appearance: none;
+  border: 3px solid white;
+  border-radius: 999px;
+  background: var(--brand-indigo);
+  box-shadow: 0 0 0 1px var(--brand-indigo), 0 4px 10px rgba(99, 91, 255, 0.3);
+}
+
+.campaign-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 3px solid white;
+  border-radius: 999px;
+  background: var(--brand-indigo);
+  box-shadow: 0 0 0 1px var(--brand-indigo), 0 4px 10px rgba(99, 91, 255, 0.3);
+}
+
+.campaign-range:focus-visible {
+  outline: 4px solid rgba(99, 91, 255, 0.18);
+  outline-offset: 4px;
+}
+
+@keyframes session-loader-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-4px) scale(1.025);
+  }
+}
+
+@keyframes session-loader-ring {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.82);
+  }
+
+  75%,
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes session-loader-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes session-loader-shimmer {
+  from {
+    transform: translateX(-120%);
+  }
+
+  to {
+    transform: translateX(240%);
+  }
+}
+
+@keyframes save-toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes save-toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes snapshot-drawer-enter {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.session-loader-mark {
+  animation: session-loader-float 1.8s ease-in-out infinite;
+}
+
+.session-loader-ring {
+  animation: session-loader-ring 1.8s ease-out infinite;
+}
+
+.session-loader-glow {
+  animation: session-loader-glow 2.2s ease-in-out infinite;
+}
+
+.session-loader-shimmer {
+  animation: session-loader-shimmer 1.25s ease-in-out infinite;
+}
+
+.save-toast {
+  animation: save-toast-enter 180ms ease-out;
+}
+
+.save-toast-progress {
+  animation: save-toast-progress 4s linear forwards;
+}
+
+.snapshot-drawer {
+  animation: snapshot-drawer-enter 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .session-loader-mark,
+  .session-loader-ring,
+  .session-loader-glow,
+  .session-loader-shimmer {
+    animation: none;
+  }
+
+  .save-toast,
+  .save-toast-progress,
+  .snapshot-drawer {
+    animation: none;
+  }
+
+  .session-loader-ring {
+    opacity: 0.45;
+  }
+}
